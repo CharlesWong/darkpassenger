@@ -24,8 +24,8 @@ build-darwin: proto
 	GOARCH=amd64 GOOS=darwin go build -v -o bin/dp-x86_64-darwin darkpassenger.go
 
 build-windows: proto
-	GOARCH=amd64 GOOS=windows go build -v -o bin/dp-x86_64-windows darkpassenger.go
-	GOARCH=386 GOOS=windows go build -v -o bin/dp-x86_32-windows darkpassenger.go
+	GOARCH=amd64 GOOS=windows go build -v -o bin/dp-x86_64-windows.exe darkpassenger.go
+	GOARCH=386 GOOS=windows go build -v -o bin/dp-x86_32-windows.exe darkpassenger.go
 
 test:
 	go test ./...
