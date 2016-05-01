@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package model;
+
+message ServiceInfo {
+	string WorkerAddr = 1;
+	string Version = 2;
+}
+
+message ServiceInfos {
+	repeated ServiceInfo ServiceInfo = 1;
+}
+
+message Notification {
+	int32 Error = 1;
+	string Msg = 2;
+}
+
+message Notifications {
+	repeated Notification Notification = 1;
+}
+
+message NullMsg {}
+
+service RegistrationService {
+	// ListAllWorkerServices lists all available worker services.
+	// Errors:
+	rpc ListAllWorkerServices(NullMsg) returns (ServiceInfos) {}
+}
+
+service NotificationService {
+	rpc GetUnreadNotification(NullMsg) returns (Notifications) {}
+}

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package model;
+
+message User {
+	// Static info
+	int64 Id = 1;
+	string Email = 2;
+	string PwdHash = 3;
+	int32 MaxConn = 4;
+	int64 CreatedTimestamp = 5;
+	int64 ExpiredTimestamp = 6;
+
+	// Dynamic info
+	int64 LoginTimestamp = 128;
+	int64 Traffic = 129;
+	string IP = 130;
+}
