@@ -1,8 +1,8 @@
 package regiservice
 
 import (
-	"github.com/CharlesWong/darkpassenger/config"
-	"github.com/CharlesWong/darkpassenger/model"
+	"github.com/charleswong/darkpassenger/config"
+	"github.com/charleswong/darkpassenger/model"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"

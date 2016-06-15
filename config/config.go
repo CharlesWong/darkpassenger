@@ -8,6 +8,7 @@ var (
 	ClientMode        = true
 	VerboseTransproxy = false
 
+	ProxyServerAddr      = ":8888"
 	RegiServiceAddr      = ":1091"
 	PacServiceAddr       = ":1092"
 	RemotePacServiceAddr = ""

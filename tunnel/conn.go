@@ -1,7 +1,7 @@
 package tunnel
 
 import (
-	"github.com/CharlesWong/darkpassenger/crypto"
+	"github.com/charleswong/darkpassenger/crypto"
 	"net"
 	"time"
 )

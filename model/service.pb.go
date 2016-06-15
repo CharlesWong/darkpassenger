@@ -109,6 +109,10 @@ func init() {
 var _ context.Context
 var _ grpc.ClientConn
 
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion2
+
 // Client API for RegistrationService service
 
 type RegistrationServiceClient interface {
@@ -146,16 +150,22 @@ func RegisterRegistrationServiceServer(s *grpc.Server, srv RegistrationServiceSe
 	s.RegisterService(&_RegistrationService_serviceDesc, srv)
 }
 
-func _RegistrationService_ListAllWorkerServices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _RegistrationService_ListAllWorkerServices_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NullMsg)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(RegistrationServiceServer).ListAllWorkerServices(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(RegistrationServiceServer).ListAllWorkerServices(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/model.RegistrationService/ListAllWorkerServices",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistrationServiceServer).ListAllWorkerServices(ctx, req.(*NullMsg))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _RegistrationService_serviceDesc = grpc.ServiceDesc{
@@ -203,16 +213,22 @@ func RegisterNotificationServiceServer(s *grpc.Server, srv NotificationServiceSe
 	s.RegisterService(&_NotificationService_serviceDesc, srv)
 }
 
-func _NotificationService_GetUnreadNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error) (interface{}, error) {
+func _NotificationService_GetUnreadNotification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NullMsg)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
-	out, err := srv.(NotificationServiceServer).GetUnreadNotification(ctx, in)
-	if err != nil {
-		return nil, err
+	if interceptor == nil {
+		return srv.(NotificationServiceServer).GetUnreadNotification(ctx, in)
 	}
-	return out, nil
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/model.NotificationService/GetUnreadNotification",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NotificationServiceServer).GetUnreadNotification(ctx, req.(*NullMsg))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _NotificationService_serviceDesc = grpc.ServiceDesc{

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/CharlesWong/darkpassenger/config"
+	"github.com/charleswong/darkpassenger/config"
 	"log"
 	"net/http"
 )

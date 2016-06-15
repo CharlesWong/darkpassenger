@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
-	"github.com/CharlesWong/darkpassenger/config"
-	"github.com/CharlesWong/darkpassenger/regiservice"
-	"github.com/CharlesWong/darkpassenger/transproxy"
-	"github.com/CharlesWong/darkpassenger/tunnel"
-	"github.com/CharlesWong/darkpassenger/util"
+	"github.com/charleswong/darkpassenger/config"
+	"github.com/charleswong/darkpassenger/regiservice"
+	"github.com/charleswong/darkpassenger/transproxy"
+	"github.com/charleswong/darkpassenger/tunnel"
+	"github.com/charleswong/darkpassenger/util"
 	"log"
 )
 
@@ -20,22 +20,22 @@ func main() {
 	flag.StringVar(&config.LogTo, "logto", "stdout", "stdout or syslog")
 	flag.StringVar(&config.FrontEndAddr, "listen", "", "host:port listen on")
 	// flag.StringVar(&config.BackEndAddr, "backend", "", "host:port of the backend")
+	flag.StringVar(&config.ProxyServerAddr, "backend", "", "host:port of the Squid")
 	flag.StringVar(&config.RegiServiceAddr, "regiservice", "", "host:port of the backend")
 	flag.StringVar(&config.CryptoMethod, "crypto", "aes-128-cfb", "encryption method")
 	flag.StringVar(&secret, "secret", "", "password used to encrypt the data")
 	flag.BoolVar(&config.ClientMode, "clientmode", true, "if running at client mode")
-	flag.BoolVar(&config.VerboseTransproxy, "verbose_transproxy", false, "should every proxy request be logged to stdout")
 	flag.Parse()
 
 	util.SetupLogOptions(config.LogTo)
 
 	if !config.ClientMode {
+
+		transproxy.StartHttpProxy()
 		if config.BackEndAddr == "" {
-			config.BackEndAddr = ":9999"
+			config.BackEndAddr = config.ProxyServerAddr
 		}
-		go func() {
-			transproxy.StartTransProxy(config.BackEndAddr, config.VerboseTransproxy)
-		}()
+
 		go func() {
 			regiservice.StartRegiService()
 		}()
