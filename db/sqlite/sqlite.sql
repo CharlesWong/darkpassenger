@@ -1,0 +1,33 @@
+
+CREATE TABLE IF NOT EXISTS user(
+	Id INTEGER NOT NULL PRIMARY KEY,
+	Email TEXT,
+	PwdHash TEXT,
+	MaxConn INTEGER,
+	CreatedTimestamp INTEGER,
+	ExpiredTimestamp INTEGER,
+	IsEnabled INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS session(
+	Token TEXT NOT NULL PRIMARY KEY,
+	Id INTEGER,
+	LoginTimestamp INTEGER,
+	Traffic INTEGER,
+	IP TEXT
+);
+
+CREATE TABLE IF NOT EXISTS session_history(
+	Token TEXT NOT NULL PRIMARY KEY,
+	Id INTEGER,
+	LoginTimestamp INTEGER,
+	Traffic INTEGER,
+	IP TEXT,
+	Expired INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS user_credit_history(
+	Id INTEGER NOT NULL PRIMARY KEY,
+	Credit INTEGER,
+	TopUpTimestamp INTEGER
+);

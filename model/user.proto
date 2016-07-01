@@ -10,9 +10,21 @@ message User {
 	int32 MaxConn = 4;
 	int64 CreatedTimestamp = 5;
 	int64 ExpiredTimestamp = 6;
-
-	// Dynamic info
-	int64 LoginTimestamp = 128;
-	int64 Traffic = 129;
-	string IP = 130;
+	bool IsEnabled = 7;
+	repeated UserSession Sessions = 128;
 }
+
+message UserSession {
+	string Token = 1;
+	int64 Id = 2;
+	int64 LoginTimestamp = 3;
+	int64 Traffic = 4;
+	string IP = 5;
+}
+
+message UserCredit {
+	int64 Id = 1;
+	int64 Credit = 2;
+	int64 TopUpTimestamp = 3;
+}
+

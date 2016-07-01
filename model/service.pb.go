@@ -16,6 +16,8 @@ It has these top-level messages:
 	Notifications
 	NullMsg
 	User
+	UserSession
+	UserCredit
 */
 package model
 
