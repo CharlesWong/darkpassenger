@@ -14,7 +14,7 @@ var (
 	userLock = &sync.Mutex{}
 )
 
-func Signup(user *model.User) error {
+func SignUp(user *model.User) error {
 	return db.AddUser(user)
 }
 
@@ -57,12 +57,15 @@ func Login(user *model.User, session *model.UserSession) (*model.User, *model.Us
 	}
 }
 
-func Logout(user *model.User, session *model.Session) error {
+func Logout(user *model.User, session *model.UserSession) error {
 	db.DelSession(session.Token)
 	return nil
 }
 
 func TopUp(credit *model.UserCredit) error {
+	if !verifyAdminToken(credit.AdminToken) {
+		return errors.New("Invalid operation.")
+	}
 	user, err := db.GetUser(credit.Id)
 	if err != nil {
 		return err
@@ -73,10 +76,16 @@ func TopUp(credit *model.UserCredit) error {
 }
 
 func Update(user *model.User) error {
+	if !verifyAdminToken(user.AdminToken) {
+		return errors.New("Invalid operation.")
+	}
 	return db.UpdateUser(user)
 }
 
 func Enable(user *model.User) error {
+	if !verifyAdminToken(user.AdminToken) {
+		return errors.New("Invalid operation.")
+	}
 	stored, err := db.GetUser(user.Id)
 	if err != nil {
 		return err
@@ -86,6 +95,9 @@ func Enable(user *model.User) error {
 }
 
 func Disable(user *model.User) error {
+	if !verifyAdminToken(user.AdminToken) {
+		return errors.New("Invalid operation.")
+	}
 	stored, err := db.GetUser(user.Id)
 	if err != nil {
 		return err
@@ -97,4 +109,8 @@ func Disable(user *model.User) error {
 func newSessionToken(id int64) string {
 	identity := fmt.Sprintf("%d-%d", time.Now().UnixNano())
 	return fmt.Sprintf("%X", md5.Sum([]byte(identity)))
+}
+
+func verifyAdminToken(token string) bool {
+	return token == config.AdminToken
 }

@@ -2,6 +2,9 @@ syntax = "proto3";
 
 package model;
 
+import "user.proto";
+import "util.proto";
+
 message ServiceInfo {
 	string WorkerAddr = 1;
 	string Version = 2;
@@ -33,21 +36,11 @@ service NotificationService {
 }
 
 service AccountService {
-	rpc ListAllNodes(NullMessage) returns (ClusterNode) {}
-
-	// AddNode adds the given cluster node.
-	// Errors:
-	//   41201: Invalid cluster node.
-	rpc AddNode(ClusterNode) returns (NullMessage) {}
-
-	// RemoveNode removes the given cluster node.
-	// Errors:
-	//   41202: Cluster node doesn't exist.
-	rpc RemoveNode(ClusterNode) returns (NullMessage) {}
-
-	// SetEntryIpAddr sets the entry Ip addr of the cluster.
-	rpc SetEntryIpAddr(ClusterConfig) returns (NullMessage) {}
-
-	// GetEntryIpAddr gets the entry Ip addr of the cluster.
-	rpc GetEntryIpAddr(NullMessage) returns (ClusterConfig) {}
+	rpc SignUp(User) returns(NullMessage) {}
+	rpc LogIn(User) returns (User) {}
+	rpc LogOut(User) returns (NullMessage) {}
+	rpc TopUp(UserCredit) returns (NullMessage) {}
+	rpc Update(User) returns (NullMessage) {}
+	rpc Enable(User) returns (NullMessage) {}
+	rpc Disable(User) returns (NullMessage) {}
 }

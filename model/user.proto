@@ -12,6 +12,7 @@ message User {
 	int64 ExpiredTimestamp = 6;
 	bool IsEnabled = 7;
 	repeated UserSession Sessions = 128;
+	string AdminToken = 129;
 }
 
 message UserSession {
@@ -26,5 +27,7 @@ message UserCredit {
 	int64 Id = 1;
 	int64 Credit = 2;
 	int64 TopUpTimestamp = 3;
+
+	string AdminToken = 128;
 }
 
