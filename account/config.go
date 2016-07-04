@@ -2,6 +2,7 @@ package account
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 )
 
@@ -31,4 +32,9 @@ func newConfig(file string) (*Config, error) {
 
 func InitConfig(file string) (err error) {
 	config, err = newConfig(file)
+	return
+}
+
+func GetConfig() *Config {
+	return config
 }

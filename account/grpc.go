@@ -1,7 +1,8 @@
 package account
 
 import (
-	"github.com/deepglint/deep-data/model"
+	"errors"
+	"github.com/charleswong/darkpassenger/model"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"log"
@@ -19,18 +20,21 @@ func (s *AccountService) SignUp(ctx context.Context, req *model.User) (*model.Nu
 	return nil, SignUp(req)
 }
 
-func (s *AccountService) LogIn(ctx context.Context, req *model.User) (*model.NullMessage, error) {
+func (s *AccountService) LogIn(ctx context.Context, req *model.User) (*model.User, error) {
 	if len(req.Sessions) != 1 {
-		return nil.errors.New("No session provided.")
+		return nil, errors.New("No session provided.")
 	}
-	user, session := LogIn(req, req.Sessions[0])
-	user.Sessions = []*UserSession{session}
-	return nil, user
+	user, session, err := LogIn(req, req.Sessions[0])
+	if err != nil {
+		return nil, err
+	}
+	user.Sessions = []*model.UserSession{session}
+	return user, nil
 }
 
 func (s *AccountService) LogOut(ctx context.Context, req *model.User) (*model.NullMessage, error) {
 	if len(req.Sessions) != 1 {
-		return nil.errors.New("No session provided.")
+		return nil, errors.New("No session provided.")
 	}
 	return nil, LogOut(req, req.Sessions[0])
 }
@@ -51,7 +55,10 @@ func (s *AccountService) Disable(ctx context.Context, req *model.User) (*model.N
 	return nil, Disable(req)
 }
 
-func StartAccountService(addr string) {
+func StartAccountService() {
+	if config.ListenAddr == "" {
+		return
+	}
 	// Don't enter this servcie twice since it will listen the same port twice.
 	select {
 	case accountServiceLock <- 1:
@@ -62,7 +69,7 @@ func StartAccountService(addr string) {
 		return
 	}
 
-	lis, err := net.Listen("tcp", addr)
+	lis, err := net.Listen("tcp", config.ListenAddr)
 	if err != nil {
 		log.Println("failed to listen: %v", err)
 		return

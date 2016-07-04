@@ -1,4 +1,4 @@
-package user
+package account
 
 import (
 	"crypto/md5"
@@ -18,7 +18,7 @@ func SignUp(user *model.User) error {
 	return db.AddUser(user)
 }
 
-func Login(user *model.User, session *model.UserSession) (*model.User, *model.UserSession, error) {
+func LogIn(user *model.User, session *model.UserSession) (*model.User, *model.UserSession, error) {
 	if user == nil {
 		return nil, nil, errors.New("Invalid user to login.")
 	}
@@ -29,7 +29,7 @@ func Login(user *model.User, session *model.UserSession) (*model.User, *model.Us
 	if !stored.IsEnabled || stored.MaxConn <= 0 {
 		return nil, nil, errors.New("User account is disabled.")
 	}
-	if stored.ExpiredTimestamp <= time.Now() {
+	if stored.ExpiredTimestamp <= time.Now().Unix() {
 		return nil, nil, errors.New("User account is expired.")
 	}
 	if session.IP == "" {
@@ -39,25 +39,28 @@ func Login(user *model.User, session *model.UserSession) (*model.User, *model.Us
 		userLock.Lock()
 		defer userLock.Unlock()
 		// Check session limits.
-		sessions := db.GetSessionsByUserId(user.Id)
-		for len(sessions) >= stored.MaxConn {
+		sessions, err := db.GetSessionsByUserId(user.Id)
+		if err != nil {
+			return nil, nil, errors.New("Cannot get session.")
+		}
+		for len(sessions) >= int(stored.MaxConn) {
 			db.DelSession(sessions[0].Token)
 			sessions = sessions[1:]
 		}
 		// Create a new session.
 		session.Id = stored.Id
-		session.LoginTimestamp = time.Now()
+		session.LoginTimestamp = time.Now().Unix()
 		session.Traffic = 0
 		session.Token = newSessionToken(stored.Id)
 		db.AddSession(session)
 		db.AddSessionHistory(session)
 		return user, session, nil
 	} else {
-		return nil, nil, errors.New("Username or password is incorrect. ", err)
+		return nil, nil, errors.New(fmt.Sprintf("Username or password is incorrect: %v", err))
 	}
 }
 
-func Logout(user *model.User, session *model.UserSession) error {
+func LogOut(user *model.User, session *model.UserSession) error {
 	db.DelSession(session.Token)
 	return nil
 }
@@ -112,5 +115,5 @@ func newSessionToken(id int64) string {
 }
 
 func verifyAdminToken(token string) bool {
-	return token == config.AdminToken
+	return len(token) > 0 && token == config.AdminToken
 }

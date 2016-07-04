@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/charleswong/darkpassenger/account"
+	db "github.com/charleswong/darkpassenger/db/sqlite"
 	"log"
 	"os"
 	"os/signal"
@@ -21,17 +22,21 @@ func tearDown() {
 }
 
 func main() {
-	configFile := flag.String("config", "./dp.config", "Config file.")
+	configFile := flag.String("config", "./dp.conf", "Config file.")
 	cpuprofile := flag.String("cpuprofile", "", "write cpu profile to file")
 	flag.Parse()
 
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 
-	err := account.InitConfig(configFile)
+	err := account.InitConfig(*configFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	account.Start()
+	err = db.InitDB(account.GetConfig().DataFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	Start()
 
 	defer tearDown()
 
