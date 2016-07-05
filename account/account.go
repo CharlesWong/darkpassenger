@@ -75,6 +75,7 @@ func TopUp(credit *model.UserCredit) error {
 	}
 	db.AddCreditHistory(credit)
 	user.ExpiredTimestamp = time.Now().Unix() + 3600*credit.Credit
+	user.AdminToken = credit.AdminToken
 	return Update(user)
 }
 

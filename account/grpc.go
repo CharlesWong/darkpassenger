@@ -17,16 +17,16 @@ type AccountService struct {
 }
 
 func (s *AccountService) SignUp(ctx context.Context, req *model.User) (*model.NullMessage, error) {
-	return nil, SignUp(req)
+	return &model.NullMessage{}, SignUp(req)
 }
 
 func (s *AccountService) LogIn(ctx context.Context, req *model.User) (*model.User, error) {
 	if len(req.Sessions) != 1 {
-		return nil, errors.New("No session provided.")
+		return &model.User{}, errors.New("No session provided.")
 	}
 	user, session, err := LogIn(req, req.Sessions[0])
 	if err != nil {
-		return nil, err
+		return &model.User{}, err
 	}
 	user.Sessions = []*model.UserSession{session}
 	return user, nil
@@ -34,25 +34,25 @@ func (s *AccountService) LogIn(ctx context.Context, req *model.User) (*model.Use
 
 func (s *AccountService) LogOut(ctx context.Context, req *model.User) (*model.NullMessage, error) {
 	if len(req.Sessions) != 1 {
-		return nil, errors.New("No session provided.")
+		return &model.NullMessage{}, errors.New("No session provided.")
 	}
-	return nil, LogOut(req, req.Sessions[0])
+	return &model.NullMessage{}, LogOut(req, req.Sessions[0])
 }
 
 func (s *AccountService) TopUp(ctx context.Context, req *model.UserCredit) (*model.NullMessage, error) {
-	return nil, TopUp(req)
+	return &model.NullMessage{}, TopUp(req)
 }
 
 func (s *AccountService) Update(ctx context.Context, req *model.User) (*model.NullMessage, error) {
-	return nil, Update(req)
+	return &model.NullMessage{}, Update(req)
 }
 
 func (s *AccountService) Enable(ctx context.Context, req *model.User) (*model.NullMessage, error) {
-	return nil, Enable(req)
+	return &model.NullMessage{}, Enable(req)
 }
 
 func (s *AccountService) Disable(ctx context.Context, req *model.User) (*model.NullMessage, error) {
-	return nil, Disable(req)
+	return &model.NullMessage{}, Disable(req)
 }
 
 func StartAccountService() {

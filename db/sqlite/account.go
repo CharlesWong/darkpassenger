@@ -16,19 +16,23 @@ func InitDB(file string) (err error) {
 	log.Println("Open db file ", file)
 	db, err = sql.Open("sqlite3", file)
 	if err != nil {
-		log.Println("Created db file")
-		err = createDBFile(file)
-		if err != nil {
-			return err
-		}
+		panic("open db failed.")
 	}
 	if db == nil {
 		panic("db nil")
 	}
+	err = CreateDBFile(file)
+	if err != nil {
+		panic("create db failed.")
+	}
 	return nil
 }
 
-func createDBFile(file string) (err error) {
+func CloseDB() (err error) {
+	return db.Close()
+}
+
+func CreateDBFile(file string) (err error) {
 	// create table if not exists
 	sqlTable := `
 CREATE TABLE IF NOT EXISTS user(
@@ -186,7 +190,7 @@ func addSessionImpl(session *model.UserSession, table string) (err error) {
 			Traffic,
 			IP
 		) values(?, ?, ?, ?, ?)
-		`, "session")
+		`, table)
 
 	stmt, err := db.Prepare(sqlStmt)
 	if err != nil {
@@ -209,7 +213,7 @@ func addSessionImpl(session *model.UserSession, table string) (err error) {
 
 func DelSession(token string) (err error) {
 	sqlStmt := fmt.Sprintf(`
-		DELETE session where token = %s`, token)
+		DELETE FROM session where Token = %s`, token)
 
 	stmt, err := db.Prepare(sqlStmt)
 	if err != nil {
